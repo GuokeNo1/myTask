@@ -3,7 +3,7 @@ myTask是一个简单的任务定时管理器，主要用于管理一些Pythone�
 
 ```
 myTask用户命令:
-    ./myTask.py install -- 初始化安装myTask
+    ./myTask.py install -- 初始化安装myTask(注:需要root权限执行)
     ./myTask.py update -- 更新变动的任务列表到crontab(注:需要root权限执行)
     ./myTask.py add [(name filename args runtime)/(args)] -- 添加任务
         例如添加name=helloworld filename=/usr/bin/python3 args=/root/helloworld.py runtime=00:00有以下三种方法

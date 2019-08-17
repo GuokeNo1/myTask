@@ -13,7 +13,7 @@ helpstr = \
 myTask Help:
     myTask是一个简单的任务定时管理器，主要用于管理一些Pythone的每日任务。
     myTask用户命令:
-        ./myTask.py install -- 初始化安装myTask
+        ./myTask.py install -- 初始化安装myTask(注:需要root权限执行)
         ./myTask.py update -- 更新变动的任务列表到crontab(注:需要root权限执行)
         ./myTask.py add [(name filename args runtime)/(args)] -- 添加任务
             例如添加name=helloworld filename=/usr/bin/python3 args=/root/helloworld.py runtime=00:00有以下三种方法
@@ -118,10 +118,22 @@ def isRoot():
 
 #安装本应用
 def install():
+    if not isRoot():
+        logout("install 需要root权限执行")
+        return
     initconfig()
     if not initDatabase():
         logout("数据库安装出错，请检查配置。")
         return
+    with open("/etc/crontab", 'r') as cr:
+        crontabs = cr.readlines()
+        mainTask = "*/30 * * * * root {0} update\n".format(os.path.abspath(__file__))
+        if mainTask in crontabs:
+            logout("检测到安装过本应用")
+        else:
+            crontabs.append(mainTask)
+            with open("/etc/crontab", 'w') as cw:
+                cw.writelines(crontabs)
     logout("安装完成")
 
 #更新任务列表
