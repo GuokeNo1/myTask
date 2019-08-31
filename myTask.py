@@ -8,6 +8,7 @@ import datetime
 import pymysql
 import config
 
+user = 'root'
 helpstr = \
 """
 myTask Help:
@@ -162,7 +163,7 @@ def updateTasks():
             if o['status'] == 0:
                 #新增任务
                 crontab.append("#myTask[{0}]\n".format(o["name"]))
-                crontab.append("{1} {0} * * * root {2} run {5} {3} {4}\n".format(res["runtime"][0],res["runtime"][1],os.path.abspath(__file__),res["filename"],res["args"],o["name"]))
+                crontab.append("{1} {0} * * * {6} {2} run {5} {3} {4}\n".format(res["runtime"][0],res["runtime"][1],os.path.abspath(__file__),res["filename"],res["args"],o["name"],user))
                 cursor.execute("update changes set status=3 where id={0}".format(o["id"]))
                 cursor.fetchall()
                 conn.commit()
@@ -170,7 +171,7 @@ def updateTasks():
             elif o['status'] == 1:
                 #修改任务
                 x = crontab.index("#myTask[{0}]\n".format(o["name"]))
-                crontab[x+1] = "{1} {0} * * * root {2} run {5} {3} {4}\n".format(res["runtime"][0],res["runtime"][1],os.path.abspath(__file__),res["filename"],res["args"],o["name"])
+                crontab[x+1] = "{1} {0} * * * {6} {2} run {5} {3} {4}\n".format(res["runtime"][0],res["runtime"][1],os.path.abspath(__file__),res["filename"],res["args"],o["name"],user)
                 cursor.execute("update changes set status=3 where id={0}".format(o["id"]))
                 cursor.fetchall()
                 conn.commit()
